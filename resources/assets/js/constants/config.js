@@ -1,0 +1,1 @@
+export const APP_URL = 'http://cquiz.local/api/v2/user';
