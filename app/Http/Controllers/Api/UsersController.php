@@ -38,14 +38,15 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $user = User::create([
-            'username' => $request->username,
+            'username'  => $request->username,
             'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'gender' => $request->gender,
-            'actived' => $request->active
-
+            'lastname'  => $request->lastname,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'phone'     => $request->phone,
+            'address'   => $request->address,
+            'gender'    => $request->gender,
+            'actived'   => $request->actived
         ]);
         if ($user) {
             return response()->json([
@@ -56,7 +57,6 @@ class UsersController extends Controller
                 'success' => false
             ]);
         }
-      
     }
 
     /**
@@ -95,9 +95,15 @@ class UsersController extends Controller
         $user = User::where([
             'id' => $id
         ])->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $password
+            'username'  => $request->username,
+            'firstname' => $request->firstname,
+            'lastname'  => $request->lastname,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'phone'     => $request->phone,
+            'address'   => $request->address,
+            'gender'    => $request->gender,
+            'actived'   => $request->actived
         ]);
 
         if ($user) {

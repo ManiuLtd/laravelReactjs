@@ -17,13 +17,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'v2/user', 'middleware' => 'cors' ], function()
+Route::group([ 'prefix' => 'v2/user' ], function()
 {
-	Route::get('/', 'Api\\UsersController@index')->name('user.index');
-	Route::get('edit/{id}', 'Api\\UsersController@edit')->name('user.index');
-	Route::put('/update/{id}', 'Api\\UsersController@update');
-	Route::post('/store', 'Api\\UsersController@store');
-	Route::delete('/destroy/{id}', 'Api\\UsersController@destroy');
+	Route::get('/', 'Api\\UsersController@index')->name('user.index')->middleware('cors');
+	Route::get('edit/{id}', 'Api\\UsersController@edit')->name('user.index')->middleware('cors');
+	Route::put('/update/{id}', 'Api\\UsersController@update')->middleware('cors');
+	Route::post('/store', 'Api\\UsersController@store')->middleware('cors');
+	Route::delete('/destroy/{id}', 'Api\\UsersController@destroy')->middleware('cors');
 });
 
 

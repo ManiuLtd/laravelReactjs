@@ -15,19 +15,30 @@ class InitDb extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('username')->unique();
-            $table->string('firstname', 50)->nullable();
-            $table->string('lastname', 50)->nullable();
-            $table->string('email')->unique();
-            $table->string('password')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('address', 100)->nullable(); // admin | sale | manager
-            $table->boolean('gender')->default(1); // 0: Male | 1: Female
-            $table->string('group_name')->nullable();
-            $table->string('team_name')->nullable();
-            $table->string('job_title')->nullable();
+            $table->string('username', 50)->unique()->collation('utf8_unicode_ci');
+            $table->string('firstname', 30)->nullable()->collation('utf8_unicode_ci');
+            $table->string('lastname', 30)->nullable()->collation('utf8_unicode_ci');
+            $table->string('email', 50)->unique()->collation('utf8_unicode_ci');
+            $table->string('password', 100)->nullable()->collation('utf8_unicode_ci');
+            $table->string('phone', 20)->nullable()->collation('utf8_unicode_ci');
+            $table->string('address', 100)->nullable()->collation('utf8_unicode_ci'); // admin | sale | manager
+
+            $table->tinyInteger('gender')->default(0); // 0: Male | 1: Female
+            $table->boolean('actived', 1)->default(0); // 0: false | 1: true
+            
+            // test
+            $table->text('description')->nullable()->collation('utf8_unicode_ci');
+            $table->date('date')->nullable();
+            $table->dateTime('dateTime')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->smallInteger('votes')->nullable();
+            
+            $table->json('options')->nullable();
+
             $table->rememberToken();
+
             $table->timestamps();
+            // $table->collation = 'utf8_unicode_ci';
+            $table->engine = 'InnoDB';
         });
 
         Schema::create('groups', function (Blueprint $table) {
