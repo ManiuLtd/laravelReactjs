@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Http\Requests\UsersRequest;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Validator;
 class UsersController extends Controller
 {
     /**
@@ -37,26 +39,51 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        $user = User::create([
-            'username'  => $request->username,
-            'firstname' => $request->firstname,
-            'lastname'  => $request->lastname,
-            'email'     => $request->email,
-            'password'  => Hash::make($request->password),
-            'phone'     => $request->phone,
-            'address'   => $request->address,
-            'gender'    => $request->gender,
-            'actived'   => $request->actived
-        ]);
-        if ($user) {
+        
+        $validator = Validator::make($request->all(), 
+            [
+                'username' => 'required|min:5|unique:users,username',
+                'email' => 'required| unique:users,email',
+            ], 
+            [
+                'username.required' => 'Please enter a username.',
+                'username.min' => 'The username short',
+                'email.required' => 'Please enter a email.',
+                'username.unique' => 'The username da ton tai',
+                'email.unique' => 'The email da ton tai'
+            ]
+        );
+        if($validator->fails()){
             return response()->json([
-                'success' => true
-            ]);
+                    'success' => false,
+                    $validator->errors()
+            ] );
         } else {
-            return response()->json([
-                'success' => false
+            $user = User::create([
+                'username'  => $request->username,
+                'firstname' => $request->firstname,
+                'lastname'  => $request->lastname,
+                'email'     => $request->email,
+                'password'  => Hash::make($request->password),
+                'phone'     => $request->phone,
+                'job'       => $request->job,
+                'address'   => $request->address,
+                'gender'    => $request->gender,
+                'actived'   => $request->actived
             ]);
+            if ($user) {
+                return response()->json([
+                    'success' => true,
+                    'id'      => $user->id
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false
+                ]);
+            }
         }
+
+        
     }
 
     /**
@@ -91,29 +118,44 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $password = ($request->password == '' || $request->password == null) ? '' : Hash::make($request->password);
-        $user = User::where([
-            'id' => $id
-        ])->update([
-            'username'  => $request->username,
-            'firstname' => $request->firstname,
-            'lastname'  => $request->lastname,
-            'email'     => $request->email,
-            'password'  => Hash::make($request->password),
-            'phone'     => $request->phone,
-            'address'   => $request->address,
-            'gender'    => $request->gender,
-            'actived'   => $request->actived
-        ]);
-
-        if ($user) {
-            return response()->json([
-                'success' => true
-            ]);
+        $validator = Validator::make($request->all(), 
+            [
+               'username' => 'required|unique:users,username,'.$request->id,
+                'email' => 'required|email|max:255|unique:users,email,'.$request->id,
+            ], 
+            [
+                'username.required' => 'Please enter a username.',
+                'username.min' => 'The username short',
+                'email.required' => 'Please enter a email.',
+                'username.unique' => 'The username da ton tai',
+                'email.unique' => 'The email da ton tai'
+            ]
+        );
+        if($validator->fails()){
+            return response()->json(['success' => false, $validator->errors()]);
         } else {
-            return response()->json([
-                'success' => false
+            $user = User::where([
+                'id' => $id
+            ])->update([
+                'username'  => $request->username,
+                'firstname' => $request->firstname,
+                'lastname'  => $request->lastname,
+                'email'     => $request->email,
+                'phone'     => $request->phone,
+                'job'       => $request->job,
+                'address'   => $request->address,
+                'gender'    => $request->gender,
+                'actived'   => $request->actived
             ]);
+            if ($user) {
+                return response()->json([
+                    'success' => true
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false
+                ]);
+            }
         }
     }
 

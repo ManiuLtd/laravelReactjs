@@ -8,8 +8,8 @@ class ProductActionPage extends Component {
 		super(props);
 		this.state = {
 			id: '',
-			txtFirstName: '',
-			txtLastName: '',
+			firstname: '',
+			lastname: '',
 			txtAvatar: '',
 			txtchbox: false
 			
@@ -26,8 +26,8 @@ class ProductActionPage extends Component {
 				var data = res.data.data;
 				this.setState({
 					id: data.id,
-					txtFirstName: data.first_name,
-					txtLastName: data.last_name,
+					firstname: data.first_name,
+					lastname: data.last_name,
 					txtAvatar: data.avatar
 				});
 			});
@@ -48,16 +48,16 @@ class ProductActionPage extends Component {
 		event.preventDefault();
 
 		var {history} = this.props;
-		var {id, txtFirstName, txtLastName,txtAvatar} = this.state;
+		var {id, firstname, lastname,txtAvatar} = this.state;
 		if(id) { //update
-			var data = {txtFirstName: txtFirstName, txtLastName: txtLastName, txtAvatar: txtAvatar};
+			var data = {firstname: firstname, lastname: lastname, txtAvatar: txtAvatar};
 			callApi('PUT', config.APP_URL+'/'+ id, data).then( res => {
 				history.push("/products-list");
 			});
 		} else { //create
 			callApi('POST', config.APP_URL, {
-				txtFirstName: txtFirstName,
-				txtLastName: txtLastName,
+				firstname: firstname,
+				lastname: lastname,
 				txtAvatar: txtAvatar
 			}).then( res => {
 				//C1 // history.push("/products-list");
@@ -83,9 +83,9 @@ class ProductActionPage extends Component {
 							<input 
 								type="text" 
 								className="form-control" 
-								value={this.state.txtFirstName} 
+								value={this.state.firstname} 
 								onChange={this.onChangeFrom} 
-								name="txtFirstName" 
+								name="firstname" 
 								placeholder="FirstName"/>
 						</div>
 						<div className="form-group">
@@ -93,9 +93,9 @@ class ProductActionPage extends Component {
 							<input 
 								type="text" 
 								className="form-control" 
-								value={this.state.txtLastName} 
+								value={this.state.lastname} 
 								onChange={this.onChangeFrom} 
-								name="txtLastName" 
+								name="lastname" 
 								placeholder="LastName"/>
 						</div>
 						<div className="form-group">

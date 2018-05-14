@@ -18,7 +18,7 @@ class User extends Model
         'firstname',
         'lastname',
         'email',
-        'password',
+        'job',
         'phone',
         'address',
         'gender',
@@ -34,6 +34,6 @@ class User extends Model
      * @var array
      */
     protected $hidden = [
-        'remember_token',
+        'password','remember_token',
     ];
 }
