@@ -16,7 +16,9 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+Route::group([ 'prefix' => 'v2' ], function() {
+	Route::post('/login', 'Api\\Auth\\AuthController@login')->name('loginApi')->middleware('cors');
+});
 Route::group([ 'prefix' => 'v2/user' ], function()
 {
 	Route::get('/', 'Api\\UsersController@index')->name('user.index')->middleware('cors');
