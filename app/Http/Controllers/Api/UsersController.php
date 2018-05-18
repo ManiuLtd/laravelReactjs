@@ -17,6 +17,7 @@ class UsersController extends Controller
      */
     public function index()
     {
+        // dd(Hash::make('demo'));
         $user = User::all();
         return response()->json( $user );
     }
@@ -60,10 +61,10 @@ class UsersController extends Controller
             ] );
         } else {
             $name = null;
-            if($request->get('image')) {
-                $image = $request->get('image');
+            if($request->get('picture')) {
+                $image = $request->get('picture');
                 $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-                \Image::make($request->get('image'))->save(public_path('images/').$name);
+                \Image::make($request->get('picture'))->save(public_path('images/').$name);
             }
             $user = User::create([
                 'username'  => $request->username,
@@ -81,7 +82,7 @@ class UsersController extends Controller
             if ($user) {
                 return response()->json([
                     'success' => true,
-                    'id'      => $user->id
+                    'user'      => $user
                 ]);
             } else {
                 return response()->json([
@@ -142,10 +143,10 @@ class UsersController extends Controller
             return response()->json(['success' => false, $validator->errors()]);
         } else {
             $name = null;
-            if($request->get('image')) {
-                $image = $request->get('image');
+            if($request->get('picture')) {
+                $image = $request->get('picture');
                 $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-                \Image::make($request->get('image'))->save(public_path('images/').$name);
+                \Image::make($request->get('picture'))->save(public_path('images/').$name);
             }
             $user = User::where([
                 'id' => $id
@@ -155,7 +156,7 @@ class UsersController extends Controller
                 'lastname'  => $request->lastname,
                 'email'     => $request->email,
                 'phone'     => $request->phone,
-                'picture'   => $name,
+                'picture'   => ($name == null) ? User::find($id)->picture : $name,
                 'job'       => $request->job,
                 'address'   => $request->address,
                 'gender'    => $request->gender,
@@ -163,7 +164,8 @@ class UsersController extends Controller
             ]);
             if ($user) {
                 return response()->json([
-                    'success' => true
+                    'success' => true,
+                    'user'    => User::find($id)
                 ]);
             } else {
                 return response()->json([
