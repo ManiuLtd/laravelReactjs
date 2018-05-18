@@ -59,14 +59,21 @@ class UsersController extends Controller
                     $validator->errors()
             ] );
         } else {
+            $name = null;
+            if($request->get('image')) {
+                $image = $request->get('image');
+                $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+                \Image::make($request->get('image'))->save(public_path('images/').$name);
+            }
             $user = User::create([
                 'username'  => $request->username,
                 'firstname' => $request->firstname,
                 'lastname'  => $request->lastname,
                 'email'     => $request->email,
-                'password'  => Hash::make($request->password),
+                'password'  => Hash::make('demo'),
                 'phone'     => $request->phone,
                 'job'       => $request->job,
+                'picture'   => $name,
                 'address'   => $request->address,
                 'gender'    => $request->gender,
                 'actived'   => $request->actived
@@ -134,6 +141,12 @@ class UsersController extends Controller
         if($validator->fails()){
             return response()->json(['success' => false, $validator->errors()]);
         } else {
+            $name = null;
+            if($request->get('image')) {
+                $image = $request->get('image');
+                $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+                \Image::make($request->get('image'))->save(public_path('images/').$name);
+            }
             $user = User::where([
                 'id' => $id
             ])->update([
@@ -142,6 +155,7 @@ class UsersController extends Controller
                 'lastname'  => $request->lastname,
                 'email'     => $request->email,
                 'phone'     => $request->phone,
+                'picture'   => $name,
                 'job'       => $request->job,
                 'address'   => $request->address,
                 'gender'    => $request->gender,
@@ -177,5 +191,20 @@ class UsersController extends Controller
                 'success' => false
             ]);
         }
+    }
+
+    public function upload(Request $request) {
+         // return response()->json($request->name);
+        if($request->get('file')) {
+            $image = $request->get('file');
+            $name = time().'.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
+            \Image::make($request->get('file'))->save(public_path('images/').$name);
+        }
+
+        // $fileupload = new Fileupload();
+        // $fileupload->filename=$name;
+        // $fileupload->save();
+        return response()->json('Successfully added');
+       
     }
 }
