@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 // middleware('authAdmin')->
-Route::prefix('admin')->namespace('Admin')->group(function () {
+Route::middleware('authAdmin')->prefix('admin')->namespace('Admin')->group(function () {
 
     Route::group(['prefix' => 'user'], function () {
         Route::name('user.index')->get('/', 'UsersController@index');
